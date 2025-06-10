@@ -1,1 +1,35 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  /* Verdes vivos y degradados para botones y acentos */
+  --green-500: #00d084; /* botón principal, call to action */
+  --green-400: #1be898; /* hover de botón */
+  --green-600: #00b369; /* active de botón */
+
+  /* Neutros claros para fondos y superficies */
+  --gray-50: #ffffff; /* fondo general */
+  --gray-100: #f7f9fa; /* tarjetas y secciones */
+  --gray-200: #e1e8ed; /* líneas divisorias */
+  --gray-300: #cbd6dd; /* texto secundario */
+
+  /* Neutros oscuros para texto y placeholder */
+  --gray-800: #2f3e46; /* texto principal */
+  --gray-600: #64707d; /* placeholder, labels */
+
+  /* Rojos/alertas */
+  --red-500: #ff5a5f; /* errores, alertas */
+
+  /* Sombras suaves */
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", "Roboto", sans-serif;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: transparent !important;
+}
+
