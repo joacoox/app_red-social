@@ -1,0 +1,35 @@
+<div class="post-card fade-in">
+  <div class="post-header">
+    <h3 class="post-title">{{ data().title }}</h3>
+  </div>
+  <div class="post-body">
+    <div class="image-container">
+      @if(data().imageUrl){
+      <p class="post-description">
+        <img
+          [src]="path + data().imageUrl"
+          class="post-image"
+          alt="Imagen de la publicación"
+        />
+      </p>
+      }
+    </div>
+    @if(data().description){
+    <p class="post-description">
+      {{ data().description }}
+    </p>
+    }@else{
+    <p class="post-description">Sin descripcion</p>
+    }
+  </div>
+  @if(liked !== undefined){
+    <div class="post-footer">
+      <button class="like-btn pulse-on-click" (click)="toggleLike()">
+        {{ isLiked() ? "Quitar me gusta" : "Me gusta" }} ({{  likeCount() }})
+      </button>
+    </div>
+  }
+  <p class="post-date">
+    Publicado el {{ data().createdAt | date : "dd/MM/yyyy HH:mm" }}
+  </p>
+</div>

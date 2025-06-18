@@ -1,4 +1,4 @@
-/* Contenedor general */
+
 .app {
   display: flex;
   height: 100vh;
@@ -6,9 +6,6 @@
   background-color: var(--gray-50);
 }
 
-/* ========================
-   SIDEBAR
-   ======================== */
 .sidebar {
   width: 220px;
   background-color: var(--gray-100);
@@ -68,16 +65,12 @@
   color: var(--green-500);
 }
 
-/* ========================
-   MAIN CONTENT
-   ======================== */
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* --- HEADER --- */
 .header {
   height: 60px;
   background-color: var(--gray-50);
@@ -128,7 +121,6 @@
   color: var(--green-500);
 }
 
-/* User menu */
 .user-menu {
   position: relative;
 }
@@ -162,7 +154,7 @@
   background-color: var(--gray-100);
 }
 
-/* --- CONTENT --- */
+
 .content {
   flex: 1;
   padding: 1.5rem;
@@ -170,9 +162,6 @@
   background-color: var(--gray-50);
 }
 
-/* ========================
-   FOOTER
-   ======================== */
 .footer {
   height: 50px;
   background-color: var(--gray-50);

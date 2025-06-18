@@ -1,5 +1,4 @@
 <div class="app">
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h3 class="logo">SocialApp</h3>
@@ -7,28 +6,21 @@
     <nav class="nav-list">
       <ul>
         <li class="nav-item active">
-          <i class="icon home"></i>
-          <span>Inicio</span>
+          <mat-icon aria-hidden="false" aria-label="icon" fontIcon="home"></mat-icon>
+          <a routerLink="posts" routerLinkActive="active">
+            <span>Inicio</span>
+          </a>
         </li>
-        <li class="nav-item">
-          <i class="icon users"></i>
-          <span>Amigos</span>
-        </li>
-        <li class="nav-item">
-          <i class="icon messages"></i>
-          <span>Mensajes</span>
-        </li>
-        <li class="nav-item">
-          <i class="icon settings"></i>
-          <span>Configuración</span>
+        <li class="nav-item active">
+          <mat-icon aria-hidden="false" aria-label="icon" fontIcon="person"></mat-icon>
+          <a routerLink="my-profile" routerLinkActive="active">
+            <span>Mi perfil</span>
+          </a>
         </li>
       </ul>
     </nav>
   </aside>
-
-  <!-- Main content area -->
   <div class="main">
-    <!-- Header -->
     <header class="header">
       <div class="header-left">
         <h1 class="header-logo">SocialApp</h1>
@@ -39,21 +31,19 @@
           <i class="icon notifications"></i>
         </button>
         <div class="user-menu">
-          <img src="assets/user.png" alt="Usuario" class="avatar" />
-          <ul class="dropdown">
-            <li >Mi Perfil</li>
-            <li >Cerrar Sesión</li>
-          </ul>
+          <!-- <ul class="dropdown">
+            <li>Mi Perfil</li>
+            <li>Cerrar Sesión</li>
+          </ul> -->
+          <div class="user-avatar" (click)="openUserModal()">
+            <img src="./assets/user.png" alt="Usuario" class="avatar" />
+          </div>
         </div>
       </div>
     </header>
-
-    <!-- Router outlet / contenido dinámico -->
     <main class="content">
       <router-outlet></router-outlet>
     </main>
-
-    <!-- Footer -->
     <footer class="footer">
       <p>© 2025 SocialApp</p>
     </footer>

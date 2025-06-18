@@ -1,0 +1,23 @@
+.error-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.error-icon {
+  color: #fff;
+  font-size: 24px;
+}
+.error-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.error-title {
+  font-weight: 500;
+  font-size: 14px;
+}
+.error-message {
+  font-size: 13px;
+  opacity: 0.9;
+}
+

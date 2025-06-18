@@ -19,6 +19,7 @@
 
   /* Sombras suaves */
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
 }
 
 html,
@@ -32,4 +33,21 @@ body {
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
     background-color: transparent !important;
 }
+
+.error-snackbar {
+  background-color: #f44336 !important;
+  border-left: 5px solid #d32f2f !important;
+  color: white !important;
+  padding: 14px 16px !important;
+  border-radius: 4px !important;
+}
+
+.success-snackbar {
+  background-color: #4CAF50 !important;
+  border-left: 5px solid #388E3C !important;
+  color: white !important;
+  padding: 14px 16px !important;
+  border-radius: 4px !important;
+}
+
 

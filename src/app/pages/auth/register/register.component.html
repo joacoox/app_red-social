@@ -70,7 +70,7 @@
       </div>
       <div id="input-group-username" class="input-group-login">
         <label for="username">Fecha de nacimiento</label>
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width ng-touched">
         <input matInput [matDatepicker]="picker1" [formControl]="date">
         <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
@@ -95,14 +95,13 @@
         <label for="password" style="margin-top: 10px;">Foto de perfil</label>
         <div id="input-group-username" class="input-group-login">
         <input
-          formControlName="profilePic"
           type="file"  
           (change)="saveImage($event)"
         />
         </div>    
         <div id="input-group-username" class="input-group-login">
           <label for="username">Descripcion</label>
-          <mat-form-field class="example-full-width">
+          <mat-form-field class="example-full-width ng-touched">
           <textarea matInput formControlName="description"></textarea>
          </mat-form-field>
         </div>

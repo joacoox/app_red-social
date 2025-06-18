@@ -1,1 +1,31 @@
-<p>my-profile works!</p>
+<div class="profile-container">
+  <section class="profile-header">
+    <div class="avatar-wrapper">
+      <img
+        [src]="path"
+        alt="Foto de perfil"
+        class="avatar"
+      />
+    </div>
+    <div class="user-details">
+      <h2 class="username">{{ userSignal()?.username }}</h2>
+      <p class="full-name">{{ userSignal()?.name }} {{ userSignal()?.surname }}</p>
+      <p><strong>Email:</strong> {{ userSignal()?.email }}</p>
+      <p><strong>Descripción:</strong> {{ userSignal()?.description || '—' }}</p>
+      <p><strong>Fecha de nacimiento:</strong> {{ userSignal()?.dateOfBirth | date:'dd/MM/yyyy' }}</p>
+    </div>
+  </section>
+
+  <section class="recent-posts">
+    <h3>Mis últimas publicaciones</h3>
+   <div class="post-list">
+    @for (post of recentPosts(); track $index) {
+        <app-post [data]="post"></app-post>
+    } @if(recentPosts().length === 0) {
+    <p style="text-align: center">
+      No hay publicaciones disponibles. ¡Sé el primero!
+    </p>
+    }
+  </div>
+  </section>
+</div>

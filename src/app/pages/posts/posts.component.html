@@ -1,1 +1,49 @@
-<p>posts works!</p>
+<div class="posts-container">
+  <div class="posts-header">
+    <div class="posts-title">
+      <h2>Publicaciones</h2>
+      <button class="add-post-button" (click)="createPost()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <select [(ngModel)]="sortBy" (change)="changeSort(sortBy)">
+      <option value="date">Más recientes</option>
+      <option value="likes">Más populares</option>
+    </select>
+  </div>
+
+  <div class="post-list">
+    @for (post of posts(); track $index) {
+    <app-post [data]="post" (liked)="onPostLiked()"></app-post>
+    } @if(posts().length === 0) {
+    <p style="text-align: center">
+      No hay publicaciones disponibles. ¡Sé el primero!
+    </p>
+    }
+  </div>
+
+  <div class="pagination">
+    <button
+      (click)="prevPage()"
+      [disabled]="pagination.page === 1"
+      [ngClass]="pagination.page === 1 ? 'disabled' : 'active-button'"
+    >
+      Anterior
+    </button>
+
+    <span>Página {{ pagination.page }}</span>
+
+    <button
+      (click)="nextPage()"
+      [disabled]="pagination.page === pagination.totalPages"
+      [ngClass]="
+        pagination.page === pagination.totalPages ? 'disabled' : 'active-button'
+      "
+    >
+      Siguiente
+    </button>
+  </div>
+  @if(isLoading()) {
+  <app-spinner></app-spinner>
+  }
+</div>

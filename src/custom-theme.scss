@@ -1,8 +1,10 @@
-
-// Custom Theming for Angular Material
-// For more information: https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+:root {
+  @include mat.icon-overrides((
+    color: #1be898
+  ));
+}
 html {
   @include mat.theme((
     color: (

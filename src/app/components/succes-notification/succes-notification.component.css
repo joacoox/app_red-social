@@ -1,0 +1,11 @@
+ .success-container {
+      display: flex;
+      align-items: center;
+    }
+    .success-icon {
+      color: #4CAF50;
+      margin-right: 8px;
+    }
+    .success-message {
+      color: white;
+    }

@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { ApiService } from '../../../services/apiService/api.service';
 import { IUser } from '../../../types/user';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -34,9 +35,9 @@ export class RegisterComponent {
   constructor() {
     this.formulario = new FormGroup({
       email: new FormControl("", [Validators.required, Validators.email]),
-      username: new FormControl("", [Validators.required]),
-      name: new FormControl("", [Validators.required]),
-      surname: new FormControl("", [Validators.required]),
+      username: new FormControl("", [Validators.required, Validators.minLength(3)]),
+      name: new FormControl("", [Validators.required, Validators.minLength(3)]),
+      surname: new FormControl("", [Validators.required, Validators.minLength(3)]),
       repeatPassword: new FormControl("", [Validators.required, Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]),
       password: new FormControl("", [Validators.required, Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]),
       dateOfBirth: this.date,
@@ -47,57 +48,48 @@ export class RegisterComponent {
   }
 
   async registrar() {
-    try {
-      this.isLoading.set(true);
-      if (!this.ValidateFields()) {
-        this.isLoading.set(false);
-        return;
-      }
-      const user: IUser = {
-        email: this.email?.value,
-        name: this.name?.value,
-        surname: this.surname?.value,
-        username: this.username?.value,
-        password: this.password?.value,
-        dateOfBirth: this.formatDateToApi(this.dateOfBirth!.value),
-        description: this.description?.value,
-        image: this.image
-      };
-      this.api.register(user);
+    this.isLoading.set(true);
 
-    } catch (error) {
+    if (!this.ValidateFields()) {
+      this.isLoading.set(false);
+      return;
+    }
+
+    const user: IUser = {
+      email: this.email?.value || '',
+      name: this.name?.value || '',
+      surname: this.surname?.value || '',
+      username: this.username?.value || '',
+      password: this.password?.value || '',
+      dateOfBirth: this.formatDateToApi(this.dateOfBirth!.value),
+      description: this.description?.value || '',
+      image: this.image
+    };
+
+    try {
+      const result = await lastValueFrom(this.api.register(user));
+      this.goTo('/home/posts');
+    } catch (err) {
+      console.log("Error capturado en componente:", err);
       this.flagError.set(true);
-      this.msjError = "Error al crear la cuenta";
+      this.msjError = err instanceof Error ? err.message : "Error al crear la cuenta";
     } finally {
       this.isLoading.set(false);
     }
   }
+
 
   saveImage(event: any) {
     if (event.target && event.target.files) {
       this.image = event.target.files[0];
     }
   }
+
   private formatDateToApi(d: Date): string {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
-  }
-
-
-  HandleError(error: any) {
-    if (error === null) return;
-    this.flagError.set(true);
-
-    switch (error.error.message) {
-      case "User already registered":
-        this.msjError = "Usuario ya registrado con ese email";
-        break;
-      default:
-        this.msjError = "Error al crear la cuenta";
-        break;
-    }
   }
 
   ValidateFields(): boolean {
@@ -113,6 +105,17 @@ export class RegisterComponent {
       this.msjError = "El email no es valido";
       return false;
     }
+    if (this.username?.hasError("required")) {
+      this.flagError.set(true);
+      this.msjError = "El nombre es obligatorio de usuario";
+      return false;
+    }
+
+    if (this.username?.hasError("minlength")) {
+      this.flagError.set(true);
+      this.msjError = "El minimo de caracteres son 3 para el nombre de usuario";
+      return false;
+    }
 
     if (this.name?.hasError("required")) {
       this.flagError.set(true);
@@ -120,9 +123,21 @@ export class RegisterComponent {
       return false;
     }
 
+    if (this.name?.hasError("minlength")) {
+      this.flagError.set(true);
+      this.msjError = "El minimo de caracteres son 3 para el nombre";
+      return false;
+    }
+
     if (this.surname?.hasError("required")) {
       this.flagError.set(true);
       this.msjError = "El apellido es obligatorio";
+      return false;
+    }
+
+    if (this.surname?.hasError("minlength")) {
+      this.flagError.set(true);
+      this.msjError = "El minimo de caracteres son 3 para el apellido";
       return false;
     }
 
@@ -159,7 +174,9 @@ export class RegisterComponent {
     if (this.image === null || this.image === undefined || !(this.image instanceof File)) {
       this.flagError.set(true);
       this.msjError = "La foto de perfil es obligatoria";
+      return false;
     }
+
     this.flagError.set(false);
     this.msjError = "";
     return true;

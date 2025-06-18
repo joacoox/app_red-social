@@ -7,7 +7,7 @@ import { ApiService } from '../../../services/apiService/api.service';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, ReactiveFormsModule,SpinnerComponent],
+  imports: [FormsModule, ReactiveFormsModule, SpinnerComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -18,7 +18,7 @@ export class LoginComponent {
   flagError = signal<boolean>(false);
   isLoading = signal<boolean>(false);
   msjError: string = "";
-  
+
 
   constructor() {
     this.formulario = new FormGroup({
@@ -31,33 +31,23 @@ export class LoginComponent {
   }
 
   async login() {
-    try {
-      this.isLoading.set(true);
-      if (!this.ValidateFields()) {
-        this.isLoading.set(false);
-        return;
-      }
-     this.api.login(this.username?.value, this.password?.value);
-      //this.HandleError(response.error);
-    } catch (error) {
-      this.flagError.set(true);
-      this.msjError = "Error al iniciar sesion";
-    } finally {
+    this.isLoading.set(true);
+    if (!this.ValidateFields()) {
       this.isLoading.set(false);
+      return;
     }
-  }
-  HandleError(error: any) {
-    if (error === null) return;
-    this.flagError.set(true);
-    switch (error.error.message) {
-      case "Invalid login credentials":
-        this.msjError = "No se encontro una cuenta con ese email y contraseña";
-      break;
-      default:
+    this.api.login(this.username?.value, this.password?.value).subscribe({
+      next: () => {
+        this.goTo('/home/posts');
+      },
+      error: (err) => {
+        this.flagError.set(true);
         this.msjError = "Error al iniciar sesion";
-        break;
-    }
+      }
+    });
+    this.isLoading.set(false);
   }
+
   ValidateFields(): boolean {
     if (this.username?.hasError("required")) {
       this.flagError.set(true);
@@ -83,11 +73,15 @@ export class LoginComponent {
   }
 
   async AutoLogin() {
-    try {
-      this.api.login("joaco2", "joAco123456");
-    } catch (error) {
-      this.flagError.set(true);
-      this.msjError = "Error al iniciar sesion";
-    }
+    this.api.login("joaquin", "jOa123456").subscribe({
+      next: () => {
+        this.goTo('/home/posts');
+      },
+      error: (err) => {
+        console.log("Error capturado en componente:", err);
+        this.flagError.set(true);
+        this.msjError = "Error al iniciar sesion";
+      }
+    });
   }
 }
