@@ -7,7 +7,7 @@ import { catchError, from, map, Observable, of, tap, throwError } from 'rxjs';
 import { IAuth } from '../../types/auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NotifyService } from '../notify/notify.service';
-import { IPost } from '../../types/post';
+import { Comment, IPost } from '../../types/post';
 import { funciones } from '../../helpers/functions';
 
 @Injectable({
@@ -282,7 +282,29 @@ export class ApiService {
         tap((data) => {
         }),
         catchError((error: HttpErrorResponse) => {
-          const errorMessage = 'Error al likear la publicacion';
+          const errorMessage = 'Error al sacar el like de publicacion';
+          this.notify.showError(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        })
+      );
+  }
+
+  commentPost(idPost: string, comments: Comment) {
+
+    const url = `${environment.api_url}publication/${idPost}/comments`;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.post<any>(url, comments,
+      { headers }).pipe(
+        tap((data) => {
+          console.log("succes")
+        }),
+        catchError((error: HttpErrorResponse) => {
+          const errorMessage = 'Error al comentar la publicacion';
           this.notify.showError(errorMessage);
           return throwError(() => new Error(errorMessage));
         })

@@ -1,0 +1,117 @@
+<div
+  style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+  "
+>
+  <span style="font-weight: 500; font-size: 22px; margin-left: 10px">{{
+    data.post.title
+  }}</span>
+  <button mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="post-modal">
+  <div class="post-container">
+    <div class="post-image">
+      <img
+        [src]="path + data.post.imageUrl"
+        alt="Publicación"
+        class="image-content"
+      />
+    </div>
+
+    <div class="post-content">
+      <div class="post-header">
+        <div class="user-info">
+          <div class="user-avatar">
+            <img
+              [src]="path + data.post.userId.image"
+              alt="fotoDePerfil"
+              class="image-user"
+            />
+          </div>
+          <div>
+            <div class="username">{{ data.post.userId.username }}</div>
+          </div>
+        </div>
+        <button mat-icon-button>
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+
+      <div class="comments-section">
+        <div class="comment-list">
+          <div class="comment">
+            <div class="comment-user">
+              <span class="username">{{ data.post.username }} </span>
+              <span class="comment-text">{{ data.post.description }}</span>
+            </div>
+          </div>
+
+          @for(comment of comments(); track $index){
+          <div class="comment">
+            <div class="comment-user" style="display: flex; align-items: center;">
+              <div class="user-avatar">
+                <img
+                  [src]="path + comment.userId.image"
+                  alt="fotoDePerfil"
+                  class="image-user"
+                />
+              </div>
+              <span style="margin: 8px;" class="username">{{ comment.userId.username }} : </span>
+              <span class="comment-text" style="padding-top: 5px;">{{ comment.text }}</span>
+            </div>
+            <div class="comment-meta">
+              <span class="comment-date">{{
+                comment.createdAt | date : "dd/MM/yy"
+              }}</span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="post-details">
+        <div class="post-actions">
+          <button mat-icon-button>
+            <mat-icon>{{
+              data.isLiked ? "favorite" : "favorite_border"
+            }}</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>chat_bubble_outline</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>send</mat-icon>
+          </button>
+          <button mat-icon-button class="bookmark">
+            <mat-icon>bookmark_border</mat-icon>
+          </button>
+        </div>
+
+        <div class="likes-count">{{ data.likeCount }} me gusta</div>
+
+        <div class="post-date">
+          {{ data.post.createdAt | date : "dd/MM/yyyy HH:mm" }}
+        </div>
+      </div>
+
+      <div class="new-comment">
+        <mat-form-field appearance="outline">
+          <input
+            matInput
+            placeholder="Añade un comentario..."
+            [(ngModel)]="newComment"
+          />
+          <button mat-button matSuffix color="primary" (click)="addComment()">
+            Publicar
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

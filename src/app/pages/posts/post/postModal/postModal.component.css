@@ -1,0 +1,220 @@
+.post-modal {
+  --container-color: var(--gray-50);
+  --subhead-color: var(--gray-800);
+  --supporting-text-color: var(--gray-600);
+  --container-shape: 12px;
+  --container-max-width: 90vw;
+  --container-min-width: 50vw;
+  --content-padding: 0;
+  --with-actions-content-padding: 0;
+  --actions-padding: 12px 24px;
+  --headline-padding: 0;
+  --container-elevation-shadow: var(--shadow);
+
+  padding: 0;
+  color: var(--supporting-text-color);
+}
+
+.mat-mdc-dialog-content{
+  max-height: 90vh !important;
+}
+
+.post-container {
+  display: flex;
+  height: 80vh;
+  max-height: 800px;
+  min-width: 50vh;
+  background-color: var(--container-color);
+  border-radius: var(--container-shape);
+  box-shadow: var(--container-elevation-shadow);
+}
+
+.post-image {
+  flex: 1 1 60%;
+  background-color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--container-shape) 0 0 var(--container-shape);
+}
+
+.post-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.post-content {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--container-color);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--headline-padding);
+  padding: 16px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--gray-600);
+}
+
+.username {
+  font-weight: 600;
+  color: var(--subhead-color);
+  font: var(--subhead-font);
+  font-size: var(--subhead-size);
+  font-weight: var(--subhead-weight);
+  line-height: var(--subhead-line-height);
+  letter-spacing: var(--subhead-tracking);
+}
+
+.comments-section {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--content-padding);
+  padding: 16px;
+  background-color: var(--container-color);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+
+.comment-text {
+  color: var(--subhead-color);
+  font: var(--supporting-text-font);
+  font-size: var(--supporting-text-size);
+  font-weight: var(--supporting-text-weight);
+  line-height: var(--supporting-text-line-height);
+  letter-spacing: var(--supporting-text-tracking);
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: var(--supporting-text-color);
+}
+
+.like-comment {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+.post-details {
+  padding: var(--with-actions-content-padding);
+  padding: 16px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.post-actions {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.post-actions button {
+  color: var(--subhead-color);
+}
+
+.bookmark {
+  margin-left: auto;
+}
+
+.likes-count {
+  font-weight: 600;
+  color: var(--subhead-color);
+  margin-bottom: 8px;
+  font-size: var(--supporting-text-size);
+}
+
+.post-date {
+  font-size: 10px;
+  color: var(--supporting-text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.new-comment {
+  padding: var(--content-padding);
+  padding: 16px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-dialog-actions {
+  padding: var(--actions-padding) !important;
+  background-color: var(--gray-100);
+  border-top: 1px solid var(--gray-200);
+}
+/* Estilos para botón de me gusta cuando está activo */
+.post-actions button[color="warn"] {
+  color: var(--red-500);
+}
+
+/* Scrollbar personalizada */
+.comments-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comments-section::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+.comments-section::-webkit-scrollbar-thumb {
+  background-color: var(--gray-300);
+  border-radius: 20px;
+}
+
+/* Accesibilidad: ocultar título visualmente pero mantener para screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.image-user {
+  max-width: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}

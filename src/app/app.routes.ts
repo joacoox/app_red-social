@@ -28,6 +28,6 @@ export const routes: Routes = [
         path: "register",
         loadComponent: () => import("./pages/auth/register/register.component").then((c) => c.RegisterComponent),
     },
-    { path: '', redirectTo: 'register', pathMatch: 'full' },
-    { path: '**', redirectTo: 'register' }
+    //{ path: '', redirectTo: 'register', pathMatch: 'full' },
+    //{ path: '**', redirectTo: 'register' }
 ];

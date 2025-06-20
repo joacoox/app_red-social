@@ -20,6 +20,18 @@
   /* Sombras suaves */
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
+  /* Tokens de tipografía */
+  --subhead-font: "Roboto", sans-serif;
+  --subhead-size: 1.25rem;
+  --subhead-weight: 500;
+  --subhead-line-height: 1.5;
+  --subhead-tracking: 0.009375em;
+
+  --supporting-text-font: "Roboto", sans-serif;
+  --supporting-text-size: 1rem;
+  --supporting-text-weight: 400;
+  --supporting-text-line-height: 1.5;
+  --supporting-text-tracking: 0.009375em;
 }
 
 html,
@@ -31,7 +43,7 @@ body {
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-    background-color: transparent !important;
+  background-color: transparent !important;
 }
 
 .error-snackbar {
@@ -43,8 +55,8 @@ body {
 }
 
 .success-snackbar {
-  background-color: #4CAF50 !important;
-  border-left: 5px solid #388E3C !important;
+  background-color: #4caf50 !important;
+  border-left: 5px solid #388e3c !important;
   color: white !important;
   padding: 14px 16px !important;
   border-radius: 4px !important;

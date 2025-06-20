@@ -3,7 +3,7 @@
     <div class="posts-title">
       <h2>Publicaciones</h2>
       <button class="add-post-button" (click)="createPost()">
-        <mat-icon>add</mat-icon>
+        <mat-icon style="color: white;">add</mat-icon>
       </button>
     </div>
     <select [(ngModel)]="sortBy" (change)="changeSort(sortBy)">
@@ -14,10 +14,10 @@
 
   <div class="post-list">
     @for (post of posts(); track $index) {
-    <app-post [data]="post" (liked)="onPostLiked()"></app-post>
+    <app-post [data]="post" (liked?)="onPostLiked()"></app-post>
     } @if(posts().length === 0) {
     <p style="text-align: center">
-      No hay publicaciones disponibles. ¡Sé el primero!
+      No hay publicaciones disponibles.
     </p>
     }
   </div>

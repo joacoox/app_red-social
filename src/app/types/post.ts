@@ -1,19 +1,23 @@
+import { IUser } from "./user";
+
 export interface IPost {
     _id?: string;
     title: string;
     description?: string;
     image?: string | File;
     filed?: boolean;
-    userId?: string;
+    userId?: IUser;
+    username?:string;
     imageUrl?: string;
     likes?: string[];
-    comments?: comment[];
+    comments?: Comment[];
     createdAt?: Date;
 }
 
-interface comment {
-    username: string;
+export interface Comment {
+    username?: string;
+    image?:string | File;
     createdAt?: Date;
     text: string;
-    _id: string;
+    userId?: any;
 }
