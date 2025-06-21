@@ -3,7 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { IUser } from '../../types/user';
 import { Router } from '@angular/router';
-import { catchError, from, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, from, map, Observable, tap, throwError } from 'rxjs';
 import { IAuth } from '../../types/auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NotifyService } from '../notify/notify.service';

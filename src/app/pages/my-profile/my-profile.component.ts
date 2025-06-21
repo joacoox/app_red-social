@@ -31,7 +31,6 @@ export class MyProfileComponent implements OnInit {
   loadPosts() {
     this.isLoading.set(true);
     let user = this.auth.getUser()
-    console.log("id",user)
     this.postService.getPosts('date', 1, 3,user?._id).subscribe({
       next: (data) => {
         const response = data as IPaginationPosts;

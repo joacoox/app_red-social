@@ -1,3 +1,5 @@
+import { Role } from "../helpers/consts";
+
 export interface IUser {
   _id?: string;
   email: string;
@@ -8,4 +10,5 @@ export interface IUser {
   description?: string;
   dateOfBirth: string;
   image ?: string | File;
+  role ?: Role;
 }

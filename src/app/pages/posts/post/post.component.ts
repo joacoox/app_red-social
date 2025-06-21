@@ -6,10 +6,13 @@ import { ApiService } from '../../../services/apiService/api.service';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PostModalComponent } from './postModal/postModal.component';
+import { MatIcon } from '@angular/material/icon';
+import { IUser } from '../../../types/user';
+import { ROLES } from '../../../helpers/consts';
 
 @Component({
   selector: 'app-post',
-  imports: [DatePipe, CommonModule, FormsModule],
+  imports: [DatePipe, CommonModule, FormsModule,MatIcon],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css',
 })
@@ -24,9 +27,11 @@ export class PostComponent implements OnInit, OnChanges {
   comments = signal<Comment[]>([]);
   newComment = signal<string>('');
   dialog = inject(MatDialog);
-
+  user = signal<IUser | null>(null);
+  ROLES = ROLES;
   ngOnInit(): void {
     this.setLikes();
+    this.user!.set(this.api.getUser());
   }
 
   ngOnChanges(): void {

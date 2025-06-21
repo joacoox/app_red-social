@@ -1,6 +1,18 @@
 <div class="post-card fade-in">
-  <div class="post-header">
+  <!-- <div class="post-header">
     <h3 class="post-title">{{ data().title }}</h3>
+  </div> -->
+  <div class="posts-header">
+    <div class="posts-title">
+      <h3>{{data().title}}</h3>
+    </div>
+    <div>
+      @if(user()?.role === ROLES.ADMIN || user()?._id === data().userId?._id){
+        <button class="add-post-button">
+          <mat-icon style="color: white;">edit</mat-icon>
+        </button>
+      }
+    </div>
   </div>
   <div class="post-body">
     <a href="#" (click)="openModal(); $event.preventDefault()">
