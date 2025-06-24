@@ -1,20 +1,28 @@
 <div class="post-card fade-in">
-  <!-- <div class="post-header">
-    <h3 class="post-title">{{ data().title }}</h3>
-  </div> -->
-  <div class="posts-header">
-    <div class="posts-title">
-      <h3>{{data().title}}</h3>
+  <div class="post-header">
+    <div class="user-info">
+      <div class="user-avatar">
+        <img
+          [src]="path + data()?.userId?.image"
+          alt="fotoDePerfil"
+          class="image-user"
+        />
+      </div>
+      <div>
+        <div class="username">{{ data()?.userId?.name }}</div>
+      </div>
     </div>
-    <div>
-      @if(user()?.role === ROLES.ADMIN || user()?._id === data().userId?._id){
-        <button class="add-post-button" (click)="editEvent()">
-          <mat-icon style="color: white;">edit</mat-icon>
-        </button>
-      }
-    </div>
+    @if(user()?.role === ROLES.ADMIN || user()?._id === data().userId?._id){
+    <button class="add-post-button" (click)="editEvent()">
+      <mat-icon style="color: white">edit</mat-icon>
+    </button>
+    }
   </div>
+
   <div class="post-body">
+    <div class="posts-title">
+      <h3>{{ data().title }}</h3>
+    </div>
     <a href="#" (click)="openModal(); $event.preventDefault()">
       <div class="image-container">
         @if(data().imageUrl){
@@ -28,6 +36,7 @@
         }
       </div>
     </a>
+
     @if(data().description){
     <p class="post-description">
       {{ data().description }}
@@ -37,15 +46,33 @@
     }
   </div>
   @if(liked !== undefined){
-  <div class="post-footer">
-    <button class="like-btn pulse-on-click" (click)="toggleLike()">
-      {{ isLiked() ? "Quitar me gusta" : "Me gusta" }} ({{ likeCount() }})
-    </button>
+
+  <div class="post-details">
+    <div class="post-actions">
+      <div>
+        <button mat-icon-button (click)="toggleLike()">
+          <mat-icon>{{ isLiked() ? "favorite" : "favorite_border" }}</mat-icon>
+        </button>
+        <button mat-icon-button (click)="openModal()">
+          <mat-icon>chat_bubble_outline</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+      <div>
+        <button mat-icon-button class="bookmark">
+          <mat-icon>bookmark_border</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="likes-count">{{ likeCount() }} me gusta</div>
+    <div class="post-date">
+      {{ data().createdAt | date : "dd/MM/yyyy HH:mm" }}
+    </div>
   </div>
   }
-  <p class="post-date">
-    Publicado el {{ data().createdAt | date : "dd/MM/yyyy HH:mm" }}
-  </p>
 
   <section class="comments-container">
     <h4>Comentarios</h4>
@@ -62,19 +89,17 @@
 
     @if(comments().length) {
     <div class="comments-list">
-      @for(c of comments(); track $index) {
-        @if($index < 3){
-          <div class="comment-item">
-            <div class="comment-header">
-              <span class="comment-user">{{ c.userId.username }}</span>
-              <span class="comment-date">{{
-                c.createdAt | date : "dd/MM/yyyy HH:mm"
-              }}</span>
-            </div>
-            <p class="comment-text">{{ c.text }}</p>
-          </div>
-        }
-      }
+      @for(c of comments(); track $index) { @if($index < 3){
+      <div class="comment-item">
+        <div class="comment-header">
+          <span class="comment-user">{{ c.userId.username }}</span>
+          <span class="comment-date">{{
+            c.createdAt | date : "dd/MM/yyyy HH:mm"
+          }}</span>
+        </div>
+        <p class="comment-text">{{ c.text }}</p>
+      </div>
+      } }
     </div>
     } @else {
     <p class="no-comments">Sé el primero en comentar</p>

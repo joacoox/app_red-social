@@ -4,15 +4,28 @@ import { environment } from '../../../../environments/environment';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ApiService } from '../../../services/apiService/api.service';
 import { FormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PostModalComponent } from './postModal/postModal.component';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { IUser } from '../../../types/user';
 import { ROLES } from '../../../helpers/consts';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-post',
-  imports: [DatePipe, CommonModule, FormsModule,MatIcon],
+  imports: [
+    DatePipe,
+    CommonModule,
+    FormsModule,
+    MatIcon,
+    MatIconModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css',
 })
@@ -29,7 +42,7 @@ export class PostComponent implements OnInit, OnChanges {
   dialog = inject(MatDialog);
   user = signal<IUser | null>(null);
   ROLES = ROLES;
-  editPost : any = output<string>();
+  editPost: any = output<string>();
 
   ngOnInit(): void {
     this.setLikes();
@@ -98,11 +111,11 @@ export class PostComponent implements OnInit, OnChanges {
     if (!user) return;
 
     const comment: Comment = {
-      userId : {
-        username : user?.username!,
+      userId: {
+        username: user?.username!,
       },
-      createdAt : new Date(),
-      text : text,
+      createdAt: new Date(),
+      text: text,
     };
 
     this.comments()?.push(comment);
@@ -123,7 +136,7 @@ export class PostComponent implements OnInit, OnChanges {
     });
   }
 
-  editEvent(){
+  editEvent() {
     this.editPost.emit(this.data()._id);
   }
 }
