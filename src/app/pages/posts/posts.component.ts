@@ -65,13 +65,37 @@ export class PostsComponent implements OnInit, OnChanges {
   }
 
   createPost() {
-    const dialogRef = this.dialog.open(NewPostModalComponent);
+    const dialogRef = this.dialog.open(NewPostModalComponent, {
+      data: {
+        post: undefined
+      },
+      width: '450px'
+    });
     dialogRef.afterClosed().subscribe((newPost) => {
       if (newPost) {
         this.loadPosts();
       }
     });
   }
+
+  editPost(id: any) {
+    const post = this.posts().filter((e: IPost) => e._id === id)
+    console.log(post)
+    const dialogRef = this.dialog.open(NewPostModalComponent,
+      {
+        data: {
+          post: post[0]
+        },
+        width: '450px'
+      }
+    );
+    dialogRef.afterClosed().subscribe((editedPost) => {
+      if (editedPost) {
+        this.loadPosts();
+      }
+    });
+  }
+
   nextPage() {
     if (this.pagination.page < this.pagination.totalPages) {
       this.pagination.page++;

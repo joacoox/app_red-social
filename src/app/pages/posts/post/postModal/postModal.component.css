@@ -15,7 +15,7 @@
   color: var(--supporting-text-color);
 }
 
-.mat-mdc-dialog-content{
+.mat-mdc-dialog-content {
   max-height: 90vh !important;
 }
 
@@ -103,8 +103,6 @@
   flex-direction: column;
   gap: 16px;
 }
-
-
 
 .comment-text {
   color: var(--subhead-color);
@@ -217,4 +215,11 @@ mat-dialog-actions {
   border-radius: 50%;
   object-fit: cover;
   display: block;
+}
+
+.more-comments-button {
+  border: none;
+  background: inherit;
+  color: blue;
+  cursor: pointer;
 }

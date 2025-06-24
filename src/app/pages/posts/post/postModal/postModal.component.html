@@ -9,7 +9,7 @@
   <span style="font-weight: 500; font-size: 22px; margin-left: 10px">{{
     data.post.title
   }}</span>
-  <button mat-icon-button mat-dialog-close>
+  <button mat-icon-button (click)="handleClose()">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -54,7 +54,10 @@
 
           @for(comment of comments(); track $index){
           <div class="comment">
-            <div class="comment-user" style="display: flex; align-items: center;">
+            <div
+              class="comment-user"
+              style="display: flex; align-items: center"
+            >
               <div class="user-avatar">
                 <img
                   [src]="path + comment.userId.image"
@@ -62,8 +65,12 @@
                   class="image-user"
                 />
               </div>
-              <span style="margin: 8px;" class="username">{{ comment.userId.username }} : </span>
-              <span class="comment-text" style="padding-top: 5px;">{{ comment.text }}</span>
+              <span style="margin: 8px" class="username"
+                >{{ comment.userId.username }} :
+              </span>
+              <span class="comment-text" style="padding-top: 5px">{{
+                comment.text
+              }}</span>
             </div>
             <div class="comment-meta">
               <span class="comment-date">{{
@@ -71,6 +78,11 @@
               }}</span>
             </div>
           </div>
+          } 
+          @if(comments().length === 3 && !noMoreComments()){
+          <button class="more-comments-button" (click)="findAllComments()">
+            <p>Cargar mas comentarios</p>
+          </button>
           }
         </div>
       </div>
@@ -113,5 +125,8 @@
         </mat-form-field>
       </div>
     </div>
+    @if(isLoading()) {
+    <app-spinner></app-spinner>
+    }
   </div>
 </mat-dialog-content>

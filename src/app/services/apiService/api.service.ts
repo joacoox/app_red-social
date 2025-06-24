@@ -1,14 +1,16 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, NgZone } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { IUser } from '../../types/user';
 import { Router } from '@angular/router';
-import { catchError, from, map, Observable, tap, throwError } from 'rxjs';
+import { catchError, from, map, Observable, Subscription, tap, throwError, timer } from 'rxjs';
 import { IAuth } from '../../types/auth';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NotifyService } from '../notify/notify.service';
 import { Comment, IPost } from '../../types/post';
 import { funciones } from '../../helpers/functions';
+import { MatDialog } from '@angular/material/dialog';
+import { ExtendSessionDialogComponent } from '../../components/extendSessionDialog/extend-session-dialog/extend-session-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +22,73 @@ export class ApiService {
   private notify = inject(NotifyService);
   private user = signal<IUser | null>(null);
   private token = signal<string | null>(null);
+  private dialog = inject(MatDialog);
+  private ngZone = inject(NgZone);
+
+  private warningTimerSub: Subscription = new Subscription;
+  private expireTimerSub: Subscription = new Subscription;
+
+  private readonly sessionDuration = 15 * 60 * 1000;
+  private readonly warningOffset = 5 * 60 * 1000;
 
   constructor() {
     this.supabase = createClient(environment.urlSupaBase, environment.tokenSupaBase);
+  }
+
+  private startTimers() {
+
+    this.warningTimerSub?.unsubscribe();
+    this.expireTimerSub?.unsubscribe();
+
+    this.warningTimerSub = timer(this.sessionDuration - this.warningOffset).subscribe(() => {
+      this.ngZone.run(() => this.openExtendDialog());
+    });
+
+    this.expireTimerSub = timer(this.sessionDuration).subscribe(() => {
+      this.logout();
+    });
+  }
+
+  private openExtendDialog() {
+    const dialogRef = this.dialog.open(ExtendSessionDialogComponent, {
+      width: '400px',
+      data: { minutesLeft: 5 }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.refreshToken();
+      }
+    });
+  }
+
+  private refreshToken() {
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.post<IAuth>(environment.api_url + 'autenticacion/refrescar', {}, { headers }).pipe(
+      tap((data) => {
+        this.startTimers();
+        this.setToken(data.token);
+        this.setUser(data);
+        this.notify.showSuccess(`Sesion extendida correctamente!`);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Error al extender sesion';
+
+        if (error.status === 401) {
+          this.logout();
+          return throwError(() => new Error());
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notify.showError(errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
   getToken() {
@@ -32,6 +98,13 @@ export class ApiService {
   private setToken(token: string) {
     if (!token) return;
     this.token.set(token);
+  }
+
+  logout() {
+    this.user.set(null);
+    this.token.set(null);
+    this.notify.showError("Porfavor ingrese sus credenciales nuevamente");
+    this.goTo('/login');
   }
 
   isLoggedIn() {
@@ -94,12 +167,6 @@ export class ApiService {
 
               if (error.status === 0) {
                 errorMessage = 'No hay conexión con el servidor';
-              } else if (error.status === 400) {
-                errorMessage = 'Credenciales inválidas';
-              } else if (error.status === 409) {
-                errorMessage = 'El usuario o correo electrónico ya existe';
-              } else if (error.status === 500) {
-                errorMessage = error.error.message || 'Error interno del servidor';
               } else if (error.error?.message) {
                 errorMessage = error.error.message;
               }
@@ -133,6 +200,7 @@ export class ApiService {
       password
     }).pipe(
       tap((data) => {
+        this.startTimers();
         this.setToken(data.token);
         this.setUser(data);
         this.notify.showSuccess(`Bienvenido ${data.user.username}!`);
@@ -191,7 +259,8 @@ export class ApiService {
         let errorMessage = 'Error al traer las publicaciones';
 
         if (error.status === 401) {
-          errorMessage = 'Credenciales incorrectas';
+          this.logout();
+          return throwError(() => new Error());
         } else if (error.status === 0) {
           errorMessage = 'No hay conexión con el servidor';
         } else if (error.error?.message) {
@@ -238,7 +307,37 @@ export class ApiService {
         }
 
         if (error.status === 401) {
-          errorMessage = 'Credenciales incorrectas';
+          this.logout();
+          return throwError(() => new Error());
+        } else if (error.status === 0) {
+          errorMessage = 'No hay conexión con el servidor';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notify.showError(errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  editPost(post: IPost, id : string) {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.put<any>(environment.api_url + 'publication/' + id, {
+      title: post.title,
+      description: post.description ? post.description : ""
+    }, { headers }).pipe(
+      tap((data) => {
+        this.notify.showSuccess(`Publicacion editada con exito`);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Error al editar la publicacion';
+        if (error.status === 401) {
+          this.logout();
+          return throwError(() => new Error());
         } else if (error.status === 0) {
           errorMessage = 'No hay conexión con el servidor';
         } else if (error.error?.message) {
@@ -264,6 +363,12 @@ export class ApiService {
         }),
         catchError((error: HttpErrorResponse) => {
           const errorMessage = 'Error al likear la publicacion';
+
+          if (error.status === 401) {
+            this.logout();
+            return throwError(() => new Error());
+          }
+
           this.notify.showError(errorMessage);
           return throwError(() => new Error(errorMessage));
         })
@@ -283,6 +388,10 @@ export class ApiService {
         }),
         catchError((error: HttpErrorResponse) => {
           const errorMessage = 'Error al sacar el like de publicacion';
+          if (error.status === 401) {
+            this.logout();
+            return throwError(() => new Error());
+          }
           this.notify.showError(errorMessage);
           return throwError(() => new Error(errorMessage));
         })
@@ -291,7 +400,7 @@ export class ApiService {
 
   commentPost(idPost: string, comments: Comment) {
 
-    const url = `${environment.api_url}publication/${idPost}/comments`;
+    const url = `${environment.api_url}comments/${idPost}/comments`;
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.getToken()}`,
@@ -304,7 +413,34 @@ export class ApiService {
           console.log("succes")
         }),
         catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            this.logout();
+            return throwError(() => new Error());
+          }
           const errorMessage = 'Error al comentar la publicacion';
+          this.notify.showError(errorMessage);
+          return throwError(() => new Error(errorMessage));
+        })
+      );
+  }
+
+  findAllComments(id: string) {
+    const url = `${environment.api_url}comments/${id}/comments/findAll`;
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.get<any>(url,
+      { headers }).pipe(
+        tap((data) => {
+        }),
+        catchError((error: HttpErrorResponse) => {
+          const errorMessage = 'Error al traer los comentarios';
+          if (error.status === 401) {
+            this.logout();
+            return throwError(() => new Error());
+          }
           this.notify.showError(errorMessage);
           return throwError(() => new Error(errorMessage));
         })

@@ -14,7 +14,8 @@
 
   <div class="post-list">
     @for (post of posts(); track $index) {
-    <app-post [data]="post" (liked?)="onPostLiked()"></app-post>
+    <app-post [data]="post" (liked?)="onPostLiked()"
+    (editPost)="editPost($event)"></app-post>
     } @if(posts().length === 0) {
     <p style="text-align: center">
       No hay publicaciones disponibles.

@@ -1,4 +1,4 @@
-<h2 mat-dialog-title><b>Crear Publicacion</b></h2>
+<h2 mat-dialog-title><b>{{!data.post?._id ? 'Crear publicacion' : 'Editar publicacion'}}</b></h2>
 <mat-dialog-content>
   <form id="form" [formGroup]="formulario">
     <div>
@@ -10,8 +10,10 @@
       <input type="text" placeholder="" formControlName="description" />
     </div>
     <div>
-      <label for="username">Imagen</label>
-      <input type="file" (change)="saveImage($event)" />
+      @if(!data.post?._id){
+        <label for="username">Imagen</label>
+        <input type="file" (change)="saveImage($event)" />
+      }
     </div>
   </form>
   @if(flagError()){
@@ -21,6 +23,6 @@
   }
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="createPublication()">Crear</button>
+  <button mat-button (click)="createPublication()">{{!data.post?._id ? 'Crear' : 'Editar'}}</button>
   <button mat-button mat-dialog-close>Cerrar</button>
 </mat-dialog-actions>

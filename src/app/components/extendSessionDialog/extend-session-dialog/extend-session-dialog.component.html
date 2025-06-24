@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Extender sesión</h2>
+<mat-dialog-content >
+  Quedan {{ data.minutesLeft }} minutos de sesión. ¿Deseas extenderla?
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close(false)" style="background-color: #e54141;color: white;">No</button>
+  <button mat-raised-button color="primary" (click)="close(true)" style="background-color: #46cb45; color: white;">
+    Sí, extender
+  </button>
+</mat-dialog-actions>

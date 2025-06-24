@@ -29,6 +29,8 @@ export class PostComponent implements OnInit, OnChanges {
   dialog = inject(MatDialog);
   user = signal<IUser | null>(null);
   ROLES = ROLES;
+  editPost : any = output<string>();
+
   ngOnInit(): void {
     this.setLikes();
     this.user!.set(this.api.getUser());
@@ -50,8 +52,8 @@ export class PostComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe((comments) => {
-      if (Array.isArray(comments && comments)) {
-        this.sendcomments(comments);
+      if (comments) {
+        this.comments.set(comments)
       }
     });
   }
@@ -119,7 +121,10 @@ export class PostComponent implements OnInit, OnChanges {
         console.log(error);
       }
     });
+  }
 
+  editEvent(){
+    this.editPost.emit(this.data()._id);
   }
 }
 

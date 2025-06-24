@@ -8,7 +8,7 @@
     </div>
     <div>
       @if(user()?.role === ROLES.ADMIN || user()?._id === data().userId?._id){
-        <button class="add-post-button">
+        <button class="add-post-button" (click)="editEvent()">
           <mat-icon style="color: white;">edit</mat-icon>
         </button>
       }

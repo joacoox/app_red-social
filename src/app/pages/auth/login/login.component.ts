@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-//import { AuthService } from '../../service/auth/auth.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 import { ApiService } from '../../../services/apiService/api.service';
@@ -73,6 +72,7 @@ export class LoginComponent {
   }
 
   async AutoLogin() {
+    this.isLoading.set(true);
     this.api.login("joaquin", "jOa123456").subscribe({
       next: () => {
         this.goTo('/home/posts');
@@ -83,5 +83,6 @@ export class LoginComponent {
         this.msjError = "Error al iniciar sesion";
       }
     });
+    this.isLoading.set(false);
   }
 }

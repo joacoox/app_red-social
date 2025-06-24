@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy, signal, inject } from "@angular/core";
+import { Component, ChangeDetectionStrategy, signal, inject, OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { SpinnerComponent } from "../../../components/spinner/spinner.component";
 import { ApiService } from "../../../services/apiService/api.service";
 import { IPost } from "../../../types/post";
@@ -13,7 +13,8 @@ import { IPost } from "../../../types/post";
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './dialog-post.css'
 })
-export class NewPostModalComponent {
+export class NewPostModalComponent implements OnInit {
+  data = inject(MAT_DIALOG_DATA);
   isLoading = signal<boolean>(false);
   formulario: FormGroup;
   image?: File;
@@ -23,10 +24,22 @@ export class NewPostModalComponent {
   minLength = 5;
   dialog = inject(MatDialogRef<NewPostModalComponent>);
 
+  ngOnInit(): void {
+    if (this.data.id) {
+
+    }
+  }
   constructor() {
     this.formulario = new FormGroup({
-      title: new FormControl("", [Validators.required, Validators.minLength(this.minLength)]),
-      description: new FormControl("", [Validators.required]),
+      title: new FormControl(this.data.post?.title ? this.data.post?.title : "",
+        [
+          Validators.required, Validators.minLength(this.minLength)
+        ]),
+      description:
+        new FormControl(this.data.post?.description ? this.data.post?.description : "",
+          [
+            Validators.required
+          ]),
     });
   }
 
@@ -43,29 +56,42 @@ export class NewPostModalComponent {
       this.isLoading.set(false);
       return;
     }
-
     const post: IPost = {
       title: this.title?.value,
       description: this.description?.value,
-      image: this.image
     };
 
-    const post$ = await this.api.createPost(post);
-
-    if (post$) {
-      post$.subscribe({
+    if (!(this.data.post?._id)) {
+      if (this.image === null || this.image === undefined || !(this.image instanceof File)) {
+        this.flagError.set(true);
+        this.isLoading.set(false);
+        this.msjError = "La imagen es obligatoria";
+        return;
+      }
+      post.image = this.image;
+      const post$ = await this.api.createPost(post);
+      if (post$) {
+        post$.subscribe({
+          next: () => {
+            this.dialog.close(post)
+          },
+          error: (err: any) => {
+            console.error("Error creating post:", err);
+          }
+        });
+      }
+    } else {
+      const put = this.api.editPost(post, this.data.post?._id);
+      put.subscribe({
         next: () => {
-          this.isLoading.set(false);
           this.dialog.close(post)
         },
         error: (err: any) => {
-          this.isLoading.set(false);
-          console.error("Error creating post:", err);
+          console.error("Error editing post:", err);
         }
       });
-    } else {
-      this.isLoading.set(false);
     }
+    this.isLoading.set(false);
   }
 
   ValidateFields(): boolean {
@@ -79,11 +105,6 @@ export class NewPostModalComponent {
     if (this.title?.hasError("minLength")) {
       this.flagError.set(true);
       this.msjError = "El titulo debe tener al menos  " + this.minLength + " caracteres";
-      return false;
-    }
-    if (this.image === null || this.image === undefined || !(this.image instanceof File)) {
-      this.flagError.set(true);
-      this.msjError = "La imagen es obligatoria";
       return false;
     }
     this.flagError.set(false);

@@ -10,6 +10,7 @@ import { environment } from "../../../../../environments/environment";
 import { ApiService } from "../../../../services/apiService/api.service";
 import { IUser } from "../../../../types/user";
 import { Comment } from "../../../../types/post";
+import { SpinnerComponent } from "../../../../components/spinner/spinner.component";
 
 @Component({
   selector: 'app-post-modal',
@@ -24,18 +25,21 @@ import { Comment } from "../../../../types/post";
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    DatePipe
+    DatePipe,
+    SpinnerComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostModalComponent {
   data = inject(MAT_DIALOG_DATA);
-  comments = signal<Comment[]>([]);
   dialogRef = inject(MatDialogRef<PostModalComponent>);
+  comments = signal<Comment[]>([]);
   newComment = signal<string>('');
   path = environment.urlSupaBase + "/storage/v1/object/public/";
   activeUser = signal<IUser | null>(null);
   api = inject(ApiService);
+  isLoading = signal<boolean>(false);
+  noMoreComments = signal<boolean>(false);
 
   ngOnInit() {
     this.activeUser.set(this.api.getUser());
@@ -63,17 +67,44 @@ export class PostModalComponent {
   }
 
   sendcomments(comments: Comment) {
+    this.isLoading.set(true);
     if (!comments) return;
     if (!this.data.post._id) return;
 
     this.api.commentPost(this.data.post._id!, comments).subscribe({
       next: (data) => {
         this.comments.set(data.comments);
+        if(data.comments.lenght < 3){
+          this.noMoreComments.set(true);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+    this.isLoading.set(false);
+  }
+
+  findAllComments() {
+    this.isLoading.set(true);
+
+    this.api.findAllComments(this.data.post._id!).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.comments.set(data.comments);
+        if(data.comments.lenght < 3){
+          this.noMoreComments.set(true);
+        }
       },
       error: (error) => {
         console.log(error);
       }
     });
 
+    this.isLoading.set(false);
+  }
+
+  handleClose(){
+    this.dialogRef.close(this.comments());
   }
 }
