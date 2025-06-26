@@ -6,7 +6,11 @@
   border-radius: 0.75rem;
   box-shadow: var(--shadow);
 }
-
+.post-list{
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 .profile-header {
   display: flex;
   align-items: center;

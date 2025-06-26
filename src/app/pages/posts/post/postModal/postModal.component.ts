@@ -43,7 +43,8 @@ export class PostModalComponent {
 
   ngOnInit() {
     this.activeUser.set(this.api.getUser());
-    this.comments.set([...this.data.post.comments]);
+    //this.comments.set([...this.data.post.comments]);
+    this.findAllComments(3);
   }
 
   addComment() {
@@ -85,10 +86,10 @@ export class PostModalComponent {
     this.isLoading.set(false);
   }
 
-  findAllComments() {
+  findAllComments(limit : number = 0) {
     this.isLoading.set(true);
 
-    this.api.findAllComments(this.data.post._id!).subscribe({
+    this.api.findAllComments(this.data.post._id!, limit).subscribe({
       next: (data) => {
         console.log(data);
         this.comments.set(data.comments);

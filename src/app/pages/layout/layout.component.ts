@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet, CommonModule, RouterLink,MatIconModule],
+  imports: [RouterOutlet, CommonModule, RouterLink, MatIconModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,8 +24,12 @@ export class LayoutComponent {
     this.router.navigateByUrl(path);
   }
 
-   openUserModal() {
+  openUserModal() {
     this.dialog.open(UserModalComponent);
+  }
+
+  logout() {
+    this.auth.logout(false);
   }
 
 }
@@ -33,7 +37,7 @@ export class LayoutComponent {
 @Component({
   selector: 'dialog-content-example-dialog',
   templateUrl: 'dialog-user.html',
-  imports: [MatDialogModule, MatButtonModule,DatePipe],
+  imports: [MatDialogModule, MatButtonModule, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserModalComponent implements OnInit {

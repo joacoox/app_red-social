@@ -57,7 +57,14 @@ export class ApiService {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.refreshToken();
+        this.refreshToken().subscribe({
+          next: () => {
+             this.notify.showSuccess("Sesion extendida")
+          },
+          error: (err) => {
+            this.notify.showError("No pudimos extender tu sesion")
+          }
+        });
       }
     });
   }
@@ -100,10 +107,12 @@ export class ApiService {
     this.token.set(token);
   }
 
-  logout() {
+  logout(showMessage : boolean = true) {
     this.user.set(null);
     this.token.set(null);
-    this.notify.showError("Porfavor ingrese sus credenciales nuevamente");
+    if(showMessage){
+      this.notify.showError("Porfavor ingrese sus credenciales nuevamente");
+    }
     this.goTo('/login');
   }
 
@@ -320,7 +329,7 @@ export class ApiService {
     );
   }
 
-  editPost(post: IPost, id : string) {
+  editPost(post: IPost, id: string) {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.getToken()}`,
       'Content-Type': 'application/json'
@@ -424,15 +433,17 @@ export class ApiService {
       );
   }
 
-  findAllComments(id: string) {
+  findAllComments(id: string, limit: number = 0) {
     const url = `${environment.api_url}comments/${id}/comments/findAll`;
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.getToken()}`,
       'Content-Type': 'application/json'
     });
+    let params = new HttpParams()
+      .set('limit', limit.toString());
 
     return this.httpClient.get<any>(url,
-      { headers }).pipe(
+      { headers, params }).pipe(
         tap((data) => {
         }),
         catchError((error: HttpErrorResponse) => {

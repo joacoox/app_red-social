@@ -73,7 +73,7 @@
     </div>
   </div>
   }
-
+  @if(showComments()){
   <section class="comments-container">
     <h4>Comentarios</h4>
     <div class="new-comment">
@@ -89,20 +89,25 @@
 
     @if(comments().length) {
     <div class="comments-list">
-      @for(c of comments(); track $index) { @if($index < 3){
-      <div class="comment-item">
-        <div class="comment-header">
-          <span class="comment-user">{{ c.userId.username }}</span>
-          <span class="comment-date">{{
-            c.createdAt | date : "dd/MM/yyyy HH:mm"
-          }}</span>
+      @for(c of comments(); track $index) {
+        @if($index <= 3){
+        <div class="comment-item">
+          <div class="comment-header">
+            <span class="comment-user">{{ c.userId.username }}</span>
+            <span class="comment-date">{{
+              c.createdAt | date : "dd/MM/yyyy HH:mm"
+            }}</span>
+          </div>
+          <p class="comment-text">{{ c.text }}</p>
         </div>
-        <p class="comment-text">{{ c.text }}</p>
-      </div>
-      } }
+      } 
+    }
     </div>
     } @else {
     <p class="no-comments">Sé el primero en comentar</p>
     }
-  </section>
+      </section>
+    }@else {
+      <div></div>
+    }
 </div>

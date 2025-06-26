@@ -43,6 +43,8 @@ export class PostComponent implements OnInit, OnChanges {
   user = signal<IUser | null>(null);
   ROLES = ROLES;
   editPost: any = output<string>();
+  noMoreComments = signal<boolean>(false);
+  showComments = input<boolean>(true);
 
   ngOnInit(): void {
     this.setLikes();
@@ -129,6 +131,9 @@ export class PostComponent implements OnInit, OnChanges {
     this.api.commentPost(this.data()._id!, comments).subscribe({
       next: (data) => {
         this.comments.set(data.comments);
+        if(data.comments.lenght < 3){
+          this.noMoreComments.set(true);
+        }
       },
       error: (error) => {
         console.log(error);

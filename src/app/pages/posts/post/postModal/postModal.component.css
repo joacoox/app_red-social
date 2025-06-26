@@ -30,7 +30,8 @@
 }
 
 .post-image {
-  flex: 1 1 60%;
+  flex: 0 0 60%;  
+  max-width: 60%;
   background-color: var(--gray-800);
   display: flex;
   align-items: center;
@@ -98,6 +99,13 @@
   border-bottom: 1px solid var(--gray-200);
 }
 
+.comment-user {
+  display: flex;
+  flex-wrap: wrap;        
+  align-items: flex-start;
+  gap: 4px;              
+}
+
 .comment-list {
   display: flex;
   flex-direction: column;
@@ -111,6 +119,10 @@
   font-weight: var(--supporting-text-weight);
   line-height: var(--supporting-text-line-height);
   letter-spacing: var(--supporting-text-tracking);
+  white-space: normal;       
+  overflow-wrap: break-word;  
+  word-break: break-word;     
+  flex: 1 1 auto;             
 }
 
 .comment-meta {
