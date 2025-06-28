@@ -20,7 +20,7 @@
     <h3>Mis últimas publicaciones</h3>
    <div class="post-list">
     @for (post of recentPosts(); track $index) {
-        <app-post [data]="post" [showComments]="false"></app-post>
+        <app-post [data]="post" [showComments]="false" (editPost)="editPost($event)"></app-post>
     } @if(recentPosts().length === 0) {
     <p style="text-align: center">
       No hay publicaciones disponibles.

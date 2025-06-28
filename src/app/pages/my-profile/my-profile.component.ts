@@ -6,10 +6,12 @@ import { IPost } from '../../types/post';
 import { IPaginationPosts } from '../../types/paginationPosts';
 import { DatePipe } from '@angular/common';
 import { PostComponent } from '../posts/post/post.component';
+import { MatDialog } from '@angular/material/dialog';
+import { NewPostModalComponent } from '../posts/postsModal/dialog.component';
 
 @Component({
   selector: 'app-my-profile',
-  imports: [DatePipe,PostComponent],
+  imports: [DatePipe, PostComponent],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.css'
 })
@@ -21,6 +23,7 @@ export class MyProfileComponent implements OnInit {
   path = "";
   isLoading = signal<boolean>(false);
   postService = inject(ApiService);
+  dialog = inject(MatDialog);
 
   async ngOnInit(): Promise<void> {
     this.loadPosts();
@@ -31,7 +34,7 @@ export class MyProfileComponent implements OnInit {
   loadPosts() {
     this.isLoading.set(true);
     let user = this.auth.getUser()
-    this.postService.getPosts('date', 1, 3,user?._id).subscribe({
+    this.postService.getPosts('date', 1, 3, user?._id).subscribe({
       next: (data) => {
         const response = data as IPaginationPosts;
         this.recentPosts.set(Array.isArray(response.results) ? response.results : []);
@@ -39,6 +42,23 @@ export class MyProfileComponent implements OnInit {
       error: (err) => console.error('Error cargando posts:', err)
     });
     this.isLoading.set(false);
+  }
+
+  editPost(id: any) {
+    const post = this.recentPosts().filter((e: IPost) => e._id === id)
+    const dialogRef = this.dialog.open(NewPostModalComponent,
+      {
+        data: {
+          post: post[0]
+        },
+        width: '450px'
+      }
+    );
+    dialogRef.afterClosed().subscribe((editedPost) => {
+      if (editedPost) {
+        this.loadPosts();
+      }
+    });
   }
 
 }

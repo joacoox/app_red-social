@@ -29,7 +29,7 @@ export class ApiService {
   private expireTimerSub: Subscription = new Subscription;
 
   private readonly sessionDuration = 15 * 60 * 1000;
-  private readonly warningOffset = 5 * 60 * 1000;
+  private readonly warningOffset = 10 * 60 * 1000;
 
   constructor() {
     this.supabase = createClient(environment.urlSupaBase, environment.tokenSupaBase);
@@ -40,7 +40,8 @@ export class ApiService {
     this.warningTimerSub?.unsubscribe();
     this.expireTimerSub?.unsubscribe();
 
-    this.warningTimerSub = timer(this.sessionDuration - this.warningOffset).subscribe(() => {
+    this.warningTimerSub = timer(this.sessionDuration - this.warningOffset
+    ).subscribe(() => {
       this.ngZone.run(() => this.openExtendDialog());
     });
 

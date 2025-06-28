@@ -1,29 +1,30 @@
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar-header">
-      <h3 class="logo">SocialApp</h3>
+      <!-- <h3 class="logo">Social Network</h3> -->
+       <img src="./assets/logo.png" alt="Logo" class="logo" />
     </div>
     <nav class="nav-list">
       <ul>
         <li class="nav-item active">
           <mat-icon aria-hidden="false" aria-label="icon" fontIcon="home"></mat-icon>
-          <a routerLink="posts" routerLinkActive="active">
+          <a routerLink="posts" routerLinkActive="active" class="nav-link">  
             <span>Inicio</span>
           </a>
         </li>
         <li class="nav-item active">
           <mat-icon aria-hidden="false" aria-label="icon" fontIcon="person"></mat-icon>
-          <a routerLink="my-profile" routerLinkActive="active">
+          <a routerLink="my-profile" routerLinkActive="active" class="nav-link">
             <span>Mi perfil</span>
           </a>
         </li>
       </ul>
     </nav>
-  </aside>
+  </aside> 
   <div class="main">
     <header class="header">
       <div class="header-left">
-        <h1 class="header-logo">SocialApp</h1>
+        <h1 class="header-logo">Social Network</h1>
       </div>
       <div class="header-right">
         <button (click)="logout()" class="btn-logout">Cerrar Sesion</button>
@@ -45,7 +46,7 @@
       <router-outlet></router-outlet>
     </main>
     <footer class="footer">
-      <p>© 2025 SocialApp</p>
+      <p>© 2025 Social Network</p>
     </footer>
   </div>
 </div>
