@@ -7,17 +7,25 @@
     <nav class="nav-list">
       <ul>
         <li class="nav-item active">
-          <mat-icon aria-hidden="false" aria-label="icon" fontIcon="home"></mat-icon>
-          <a routerLink="posts" routerLinkActive="active" class="nav-link">  
+         <mat-icon>home</mat-icon>
+          <a class="nav-link" routerLink="posts" routerLinkActive="active">  
             <span>Inicio</span>
           </a>
         </li>
         <li class="nav-item active">
-          <mat-icon aria-hidden="false" aria-label="icon" fontIcon="person"></mat-icon>
-          <a routerLink="my-profile" routerLinkActive="active" class="nav-link">
+          <mat-icon>person</mat-icon>
+          <a class="nav-link" routerLink="my-profile" routerLinkActive="active">
             <span>Mi perfil</span>
           </a>
         </li>
+        @if(auth.isAdmin()) {
+          <li class="nav-item active">
+            <mat-icon>dashboard</mat-icon>
+           <a class="nav-link" routerLink="dashboard/usuarios" routerLinkActive="active">
+             <span>Dashboard Usuarios</span>
+           </a>
+         </li>
+        }
       </ul>
     </nav>
   </aside> 

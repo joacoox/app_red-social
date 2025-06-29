@@ -16,13 +16,8 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutComponent {
-  router = inject(Router);
   dialog = inject(MatDialog);
   auth = inject(ApiService);
-
-  goTo(path: string) {
-    this.router.navigateByUrl(path);
-  }
 
   openUserModal() {
     this.dialog.open(UserModalComponent);

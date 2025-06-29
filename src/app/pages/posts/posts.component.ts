@@ -80,7 +80,7 @@ export class PostsComponent implements OnInit, OnChanges {
 
   editPost(id: any) {
     const post = this.posts().filter((e: IPost) => e._id === id)
-    console.log(post)
+    
     const dialogRef = this.dialog.open(NewPostModalComponent,
       {
         data: {

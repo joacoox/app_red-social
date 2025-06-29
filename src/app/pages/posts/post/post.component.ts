@@ -12,7 +12,8 @@ import { ROLES } from '../../../helpers/consts';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
+import { MatTooltip } from '@angular/material/tooltip';
+import { ConfirmationToolTipComponent } from '../../../components/confirmationToolTip/confirmation-tool-tip/confirmation-tool-tip.component';
 @Component({
   selector: 'app-post',
   imports: [
@@ -24,7 +25,8 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatTooltip
   ],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css',
@@ -45,6 +47,7 @@ export class PostComponent implements OnInit, OnChanges {
   editPost: any = output<string>();
   noMoreComments = signal<boolean>(false);
   showComments = input<boolean>(true);
+  delete = output<void>();
 
   ngOnInit(): void {
     this.setLikes();
@@ -69,6 +72,20 @@ export class PostComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().subscribe((comments) => {
       if (comments) {
         this.comments.set(comments)
+      }
+    });
+  }
+
+  confirmationDialog() {
+    const dialogRef = this.dialog.open(ConfirmationToolTipComponent, {
+      data: {
+        message: "Estas seguro de que deseas dar de baja esta publicaión?",
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteEvent();
       }
     });
   }
@@ -131,7 +148,7 @@ export class PostComponent implements OnInit, OnChanges {
     this.api.commentPost(this.data()._id!, comments).subscribe({
       next: (data) => {
         this.comments.set(data.comments);
-        if(data.comments.lenght < 3){
+        if (data.comments.lenght < 3) {
           this.noMoreComments.set(true);
         }
       },
@@ -143,6 +160,18 @@ export class PostComponent implements OnInit, OnChanges {
 
   editEvent() {
     this.editPost.emit(this.data()._id);
+  }
+
+  deleteEvent() {
+    if (!this.data()._id) return;
+    this.api.deletePost(this.data()._id!).subscribe({
+      next: () => {
+        this.delete.emit();
+      },
+      error: (error) => {
+        console.error('Error deleting post:', error);
+      }
+    });
   }
 }
 

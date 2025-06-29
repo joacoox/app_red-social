@@ -1,0 +1,119 @@
+<div class="dashboard-container">
+  <h2 class="dashboard-title">Gestión de Usuarios</h2>
+
+  <div class="form-section">
+    <h3 class="section-title">Registrar nuevo usuario</h3>
+    <form [formGroup]="formulario" class="user-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="surname" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre de usuario</mat-label>
+        <input matInput formControlName="username" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required type="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput formControlName="password" required type="password" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de nacimiento</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+
+      <!-- <mat-form-field appearance="outline">
+        <mat-label>Foto de perfil</mat-label>
+        <input type="file" (change)="onFileSelected($event)" />
+      </mat-form-field> -->
+     <div class="file-upload">
+      <label for="profilePic">Foto de perfil</label>
+      <input
+        title="Seleccionar foto de perfil"
+        type="file"
+        id="profilePic"
+        (change)="onFileSelected($event)"
+        class="file-input"
+      />
+     </div>
+
+
+      <mat-form-field appearance="outline">
+        <mat-label>Rol</mat-label>
+        <mat-select formControlName="role">
+          <mat-option value={{ROLES.USER}}>Usuario</mat-option>
+          <mat-option value={{ROLES.ADMIN}}>Administrador</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="registerUser()" [disabled]="formulario.invalid">
+          Crear usuario
+       </button>
+    </form>
+  </div>
+
+  <div class="table-section">
+    <h3 class="section-title">Lista de usuarios</h3>
+
+    <table mat-table [dataSource]="users()" class="mat-elevation-z2">
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Usuario</th>
+        <td mat-cell *matCellDef="let user">{{ user.username }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Rol</th>
+        <td mat-cell *matCellDef="let user">{{ user.role }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let user">
+          @if(!user.filed){
+            <button mat-icon-button color="warn" 
+              
+              [matTooltip]="'Bloquear a ' + user.username"
+              (click)="confirmationDialog(user._id, user.username)">
+              <mat-icon>block</mat-icon>
+            </button>
+          }@else {
+            <button mat-icon-button color="primary" (click)="enableUser(user._id)"
+             [matTooltip]="'Desbloquear a ' + user.username">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+   @if(isWorking()) {
+  <app-spinner></app-spinner>
+  }
+</div>

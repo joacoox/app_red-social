@@ -11,6 +11,7 @@ import { Comment, IPost } from '../../types/post';
 import { funciones } from '../../helpers/functions';
 import { MatDialog } from '@angular/material/dialog';
 import { ExtendSessionDialogComponent } from '../../components/extendSessionDialog/extend-session-dialog/extend-session-dialog.component';
+import { ROLES } from '../../helpers/consts';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class ApiService {
     this.warningTimerSub?.unsubscribe();
     this.expireTimerSub?.unsubscribe();
 
-    this.warningTimerSub = timer(this.sessionDuration - this.warningOffset
+    this.warningTimerSub = timer(this.warningOffset
     ).subscribe(() => {
       this.ngZone.run(() => this.openExtendDialog());
     });
@@ -60,7 +61,7 @@ export class ApiService {
       if (result === true) {
         this.refreshToken().subscribe({
           next: () => {
-             this.notify.showSuccess("Sesion extendida")
+            this.notify.showSuccess("Sesion extendida")
           },
           error: (err) => {
             this.notify.showError("No pudimos extender tu sesion")
@@ -108,10 +109,10 @@ export class ApiService {
     this.token.set(token);
   }
 
-  logout(showMessage : boolean = true) {
+  logout(showMessage: boolean = true) {
     this.user.set(null);
     this.token.set(null);
-    if(showMessage){
+    if (showMessage) {
       this.notify.showError("Porfavor ingrese sus credenciales nuevamente");
     }
     this.goTo('/login');
@@ -134,6 +135,11 @@ export class ApiService {
 
   goTo(path: string) {
     this.router.navigateByUrl(path);
+  }
+
+  isAdmin(): boolean {
+    const user = this.getUser();
+    return user ? user.role === ROLES.ADMIN : false;
   }
 
   register(user: IUser): Observable<IAuth> {
@@ -330,6 +336,32 @@ export class ApiService {
     );
   }
 
+  deletePost(id: string) {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.delete<any>(environment.api_url + 'publication/' + id, { headers }).pipe(
+      tap((data) => {
+        this.notify.showSuccess(`Publicacion eliminada con exito`);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Error al eliminar la publicacion';
+        if (error.status === 401) {
+          this.logout();
+          return throwError(() => new Error());
+        } else if (error.status === 0) {
+          errorMessage = 'No hay conexión con el servidor';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notify.showError(errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
   editPost(post: IPost, id: string) {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.getToken()}`,
@@ -457,6 +489,128 @@ export class ApiService {
           return throwError(() => new Error(errorMessage));
         })
       );
+  }
+
+  // Usuarios Module 
+
+  getAllUsers() {
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.get<any>(environment.api_url + 'usuarios', { headers }).pipe(
+      map(response => {
+        return response as IUser[];
+      }),
+      catchError((error: HttpErrorResponse) => {
+
+        let errorMessage = 'Error al traer los usuarios';
+
+        if (error.status === 401) {
+          this.logout();
+          return throwError(() => new Error());
+        } else if (error.status === 0) {
+          errorMessage = 'No hay conexión con el servidor';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notify.showError(errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  async createUser(user: IUser) {
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+    let imageData: any = null;
+
+    try {
+      if (user.image instanceof File) {
+        imageData = await this.saveFile(`${user.dateOfBirth}-${user.username}`, user.image);
+        if (imageData === null) throw new Error;
+        user.image = imageData.fullPath;
+      }
+    } catch (error: any) {
+      this.notify.showError("Error subiendo la imagen");
+      return throwError(() => new Error("Error subiendo la imagen"));
+    }
+
+    return this.httpClient.post<any>(environment.api_url + 'usuarios', user, { headers }).pipe(
+      tap(() => {
+        this.notify.showSuccess('Usuario creado correctamente');
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Error al crear el usuario';
+        if (error.status === 401) {
+          this.logout();
+          return throwError(() => new Error());
+        } else if (error.status === 0) {
+          errorMessage = 'No hay conexión con el servidor';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notify.showError(errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  disableUser(id: string) {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.delete<any>(environment.api_url + 'usuarios/' + id, { headers }).pipe(
+      tap(() => {
+        this.notify.showSuccess('Usuario deshabilitado correctamente');
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Error al deshabilitar el usuario';
+        if (error.status === 401) {
+          this.logout();
+          return throwError(() => new Error());
+        } else if (error.status === 0) {
+          errorMessage = 'No hay conexión con el servidor';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notify.showError(errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  enableUser(id: string) {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.httpClient.post<any>(environment.api_url + 'usuarios/' + id + '/enable', {}, { headers }).pipe(
+      tap(() => {
+        this.notify.showSuccess('Usuario habilitado correctamente');
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'Error al habilitar el usuario';
+        if (error.status === 401) {
+          this.logout();
+          return throwError(() => new Error());
+        } else if (error.status === 0) {
+          errorMessage = 'No hay conexión con el servidor';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notify.showError(errorMessage);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
   async saveFile(path: string, image: File) {
