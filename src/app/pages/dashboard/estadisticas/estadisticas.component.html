@@ -1,1 +1,103 @@
-<p>estadisticas works!</p>
+<div class="estadisticas-container">
+  <div class="stat-card">
+    <h3 class="stat-title">Publicaciones por Usuario</h3>
+    <div style="display: flex;justify-content: center;align-items: center;">
+      <div>
+        <mat-form-field class="example-form-field">
+          <mat-label>Filtrar fechas: Desde - Hasta</mat-label>
+          <mat-date-range-input
+          [formGroup]="postsPerUserDates"
+          [rangePicker]="campaignOnePicker1"
+          >
+          <input matStartDate placeholder="Start date" formControlName="start">
+          <input matEndDate placeholder="End date" formControlName="end">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker1"></mat-datepicker-toggle>
+          <mat-date-range-picker #campaignOnePicker1></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div style="padding-left: 5px;">
+        <button mat-raised-button class="boton-busqueda" (click)="postsPerUserEvent()">
+          <mat-icon style="color: white;">search</mat-icon>
+          <span style="font-weight: 600;">Buscar</span>
+        </button>
+      </div>
+    </div>
+    <canvas
+      baseChart
+      [data]="barChartData()"
+      [labels]="barChartLabels()"
+      [options]="barChartOptions()"
+      [type]="'bar'"
+    >
+    </canvas>
+  </div>
+  <div class="stat-card">
+    <h3 class="stat-title">Comentarios por Publicación</h3>
+    <div style="display: flex;justify-content: center;align-items: center;">
+      <div>
+        <mat-form-field class="example-form-field">
+          <mat-label>Filtrar fechas: Desde - Hasta</mat-label>
+          <mat-date-range-input
+          [formGroup]="commentsPerPostDate"
+          [rangePicker]="campaignOnePicker2"
+          >
+          <input matStartDate placeholder="Start date" formControlName="start">
+          <input matEndDate placeholder="End date" formControlName="end">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker2"></mat-datepicker-toggle>
+          <mat-date-range-picker #campaignOnePicker2></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div style="padding-left: 5px;">
+        <button mat-raised-button class="boton-busqueda" (click)="commentsPerPostEvent()">
+          <mat-icon style="color: white;">search</mat-icon>
+          <span style="font-weight: 600;">Buscar</span>
+        </button>
+      </div>
+    </div>
+    <canvas
+      baseChart
+      [data]="barChartDataComments()"
+      [options]="barChartOptionsComments()"
+      [type]="'bar'"
+    >
+    </canvas>
+  </div>
+
+  <div class="stat-card">
+    <h3 class="stat-title">Total de Comentarios</h3>
+    <div style="display: flex;justify-content: center;align-items: center;">
+      <div>
+        <mat-form-field class="example-form-field">
+          <mat-label>Filtrar fechas: Desde - Hasta</mat-label>
+          <mat-date-range-input
+          [formGroup]="allCommentsDate"
+          [rangePicker]="campaignOnePicker3"
+          >
+          <input matStartDate placeholder="Start date" formControlName="start">
+          <input matEndDate placeholder="End date" formControlName="end">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker3"></mat-datepicker-toggle>
+          <mat-date-range-picker #campaignOnePicker3></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div style="padding-left: 5px;">
+        <button mat-raised-button class="boton-busqueda" (click)="allCommentsEvent()">
+          <mat-icon style="color: white;">search</mat-icon>
+          <span style="font-weight: 600;">Buscar</span>
+        </button>
+      </div>
+    </div>
+    <canvas
+      baseChart
+      [data]="doughnutChartDataComments()"
+      [options]="doughnutChartOptionsComments()"
+      chartType="doughnut"
+    >
+    </canvas>
+  </div>
+</div>

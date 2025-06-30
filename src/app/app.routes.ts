@@ -22,13 +22,17 @@ export const routes: Routes = [
                 path : "dashboard/usuarios",
                 loadComponent: () => import("./pages/dashboard/usuarios/usuarios.component").then((c) => c.UsuariosComponent),
                 canActivate : [adminGuard]
-            }
+            },
+            {
+                path : "dashboard/estadisticas",
+                loadComponent: () => import("./pages/dashboard/estadisticas/estadisticas.component").then((c) => c.EstadisticasComponent),
+                canActivate : [adminGuard]
+            },
         ]
     },
     {
         path: "login",
         loadComponent: () => import("./pages/auth/login/login.component").then((c) => c.LoginComponent),
-        //canActivateChild: [userActiveGuard]
     },
     {
         path: "register",

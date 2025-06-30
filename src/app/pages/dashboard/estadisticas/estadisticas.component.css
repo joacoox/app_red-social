@@ -1,0 +1,70 @@
+.estadisticas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: inherit;
+  border-radius: 1rem;
+  align-items: center;
+}
+
+.stat-card {
+  background-color: var(--gray-100);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 1000px;
+  width: 100%;
+  align-items: center;
+}
+.example-form-field {
+  margin: 0 8px 16px 0;
+}
+
+.stat-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.boton-busqueda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1976d2;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.boton-busqueda:hover {
+  background-color: #1565c0;
+}
+
+.boton-busqueda mat-icon {
+  font-size: 20px;
+}

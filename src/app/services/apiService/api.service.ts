@@ -322,16 +322,7 @@ export class ApiService {
           }
         }
 
-        if (error.status === 401) {
-          this.logout();
-          return throwError(() => new Error());
-        } else if (error.status === 0) {
-          errorMessage = 'No hay conexión con el servidor';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        this.notify.showError(errorMessage);
-        return throwError(() => new Error(errorMessage));
+        return this.parseError(error, errorMessage);
       })
     );
   }
@@ -348,16 +339,7 @@ export class ApiService {
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Error al eliminar la publicacion';
-        if (error.status === 401) {
-          this.logout();
-          return throwError(() => new Error());
-        } else if (error.status === 0) {
-          errorMessage = 'No hay conexión con el servidor';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        this.notify.showError(errorMessage);
-        return throwError(() => new Error(errorMessage));
+        return this.parseError(error, errorMessage);
       })
     );
   }
@@ -377,16 +359,7 @@ export class ApiService {
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Error al editar la publicacion';
-        if (error.status === 401) {
-          this.logout();
-          return throwError(() => new Error());
-        } else if (error.status === 0) {
-          errorMessage = 'No hay conexión con el servidor';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        this.notify.showError(errorMessage);
-        return throwError(() => new Error(errorMessage));
+        return this.parseError(error, errorMessage);
       })
     );
   }
@@ -405,14 +378,7 @@ export class ApiService {
         }),
         catchError((error: HttpErrorResponse) => {
           const errorMessage = 'Error al likear la publicacion';
-
-          if (error.status === 401) {
-            this.logout();
-            return throwError(() => new Error());
-          }
-
-          this.notify.showError(errorMessage);
-          return throwError(() => new Error(errorMessage));
+          return this.parseError(error, errorMessage);
         })
       );
   }
@@ -430,12 +396,7 @@ export class ApiService {
         }),
         catchError((error: HttpErrorResponse) => {
           const errorMessage = 'Error al sacar el like de publicacion';
-          if (error.status === 401) {
-            this.logout();
-            return throwError(() => new Error());
-          }
-          this.notify.showError(errorMessage);
-          return throwError(() => new Error(errorMessage));
+          return this.parseError(error, errorMessage);
         })
       );
   }
@@ -455,13 +416,8 @@ export class ApiService {
           console.log("succes")
         }),
         catchError((error: HttpErrorResponse) => {
-          if (error.status === 401) {
-            this.logout();
-            return throwError(() => new Error());
-          }
           const errorMessage = 'Error al comentar la publicacion';
-          this.notify.showError(errorMessage);
-          return throwError(() => new Error(errorMessage));
+          return this.parseError(error, errorMessage);
         })
       );
   }
@@ -481,12 +437,7 @@ export class ApiService {
         }),
         catchError((error: HttpErrorResponse) => {
           const errorMessage = 'Error al traer los comentarios';
-          if (error.status === 401) {
-            this.logout();
-            return throwError(() => new Error());
-          }
-          this.notify.showError(errorMessage);
-          return throwError(() => new Error(errorMessage));
+          return this.parseError(error, errorMessage);
         })
       );
   }
@@ -505,19 +456,8 @@ export class ApiService {
         return response as IUser[];
       }),
       catchError((error: HttpErrorResponse) => {
-
         let errorMessage = 'Error al traer los usuarios';
-
-        if (error.status === 401) {
-          this.logout();
-          return throwError(() => new Error());
-        } else if (error.status === 0) {
-          errorMessage = 'No hay conexión con el servidor';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        this.notify.showError(errorMessage);
-        return throwError(() => new Error(errorMessage));
+        return this.parseError(error, errorMessage);
       })
     );
   }
@@ -547,16 +487,7 @@ export class ApiService {
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Error al crear el usuario';
-        if (error.status === 401) {
-          this.logout();
-          return throwError(() => new Error());
-        } else if (error.status === 0) {
-          errorMessage = 'No hay conexión con el servidor';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        this.notify.showError(errorMessage);
-        return throwError(() => new Error(errorMessage));
+        return this.parseError(error, errorMessage);
       })
     );
   }
@@ -573,16 +504,7 @@ export class ApiService {
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Error al deshabilitar el usuario';
-        if (error.status === 401) {
-          this.logout();
-          return throwError(() => new Error());
-        } else if (error.status === 0) {
-          errorMessage = 'No hay conexión con el servidor';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        this.notify.showError(errorMessage);
-        return throwError(() => new Error(errorMessage));
+        return this.parseError(error, errorMessage);
       })
     );
   }
@@ -599,19 +521,89 @@ export class ApiService {
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Error al habilitar el usuario';
-        if (error.status === 401) {
-          this.logout();
-          return throwError(() => new Error());
-        } else if (error.status === 0) {
-          errorMessage = 'No hay conexión con el servidor';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        this.notify.showError(errorMessage);
-        return throwError(() => new Error(errorMessage));
+        return this.parseError(error, errorMessage);
       })
     );
   }
+
+  // Estadisticas Module 
+
+  getPostsPerUser(from: string, to: string) {
+    const params = new HttpParams()
+      .set('from', from)
+      .set('to', to);
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`
+    });
+
+    return this.httpClient
+      .get<any>(`${environment.api_url}estadisticas/publicaciones`, { params, headers })
+      .pipe(
+        tap(() => {
+        }),
+        catchError((error: HttpErrorResponse) => {
+          const errorMessage = 'Error al obtener publicaciones por usuario';
+          return this.parseError(error, errorMessage);
+        })
+      );
+  }
+
+  getAllComments(from: string, to: string) {
+    const params = new HttpParams()
+      .set('from', from)
+      .set('to', to);
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`
+    });
+
+    return this.httpClient
+      .get<any>(`${environment.api_url}estadisticas/comentarios`, { params, headers })
+      .pipe(
+        tap(() => {
+        }),
+        catchError((error: HttpErrorResponse) => {
+          const errorMessage = 'Error al obtener comentarios por usuario';
+          return this.parseError(error, errorMessage);
+        })
+      );
+  }
+
+  commentsPerPost(from: string, to: string) {
+    const params = new HttpParams()
+      .set('from', from)
+      .set('to', to);
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`
+    });
+
+    return this.httpClient
+      .get<any>(`${environment.api_url}estadisticas/comentarios-por-publicacion`, { params, headers })
+      .pipe(
+        tap(() => {
+        }),
+        catchError((error: HttpErrorResponse) => {
+          const errorMessage = 'Error al obtener comentarios por publicación';
+          return this.parseError(error, errorMessage);
+        })
+      );
+  }
+
+  parseError(error: HttpErrorResponse, errorMessage: string = 'Error desconocido') {
+    if (error.status === 401) {
+      this.logout();
+      return throwError(() => new Error());
+    } else if (error.status === 0) {
+      errorMessage = 'No hay conexión con el servidor';
+    } else if (error.error?.message) {
+      errorMessage = error.error.message;
+    }
+    this.notify.showError(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
+
 
   async saveFile(path: string, image: File) {
     const { data, error } = await this.supabase.storage

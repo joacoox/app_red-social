@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { ApiService } from '../../services/apiService/api.service';
 import { IUser } from '../../types/user';
 import { environment } from '../../../environments/environment';
@@ -13,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [RouterOutlet, CommonModule, RouterLink, MatIconModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutComponent {
   dialog = inject(MatDialog);
