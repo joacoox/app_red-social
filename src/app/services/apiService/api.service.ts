@@ -150,7 +150,7 @@ export class ApiService {
         try {
 
           if (user.image instanceof File) {
-            imageData = await this.saveFile(`${user.dateOfBirth}-${user.username}`, user.image);
+            imageData = await this.saveFile(funciones.generarHash(15), user.image);
           }
 
           const payload = {
@@ -292,7 +292,7 @@ export class ApiService {
     let imageData = null;
     try {
       if (post.image instanceof File) {
-        imageData = await this.saveFile(funciones.generarHash(), post.image);
+        imageData = await this.saveFile(funciones.generarHash(15), post.image);
       }
     } catch (err) {
       this.notify.showError("Error subiendo la imagen");
@@ -472,7 +472,7 @@ export class ApiService {
 
     try {
       if (user.image instanceof File) {
-        imageData = await this.saveFile(`${user.dateOfBirth}-${user.username}`, user.image);
+        imageData = await this.saveFile(funciones.generarHash(15), user.image);
         if (imageData === null) throw new Error;
         user.image = imageData.fullPath;
       }
@@ -487,6 +487,11 @@ export class ApiService {
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'Error al crear el usuario';
+        this.deleteFile(imageData?.fullPath)
+          .catch(cleanError => {
+            console.error('Error limpiando imagen:', cleanError);
+          });
+
         return this.parseError(error, errorMessage);
       })
     );
@@ -594,7 +599,7 @@ export class ApiService {
   parseError(error: HttpErrorResponse, errorMessage: string = 'Error desconocido') {
     if (error.status === 401) {
       this.logout();
-      return throwError(() => new Error());
+      return throwError(() => new Error(error.error?.message || 'Unauthorized'));
     } else if (error.status === 0) {
       errorMessage = 'No hay conexión con el servidor';
     } else if (error.error?.message) {
