@@ -255,10 +255,11 @@
   color: var(--gray-600);
 }
 .image-user {
-  max-width: 50px;
+  width: 100%;
   border-radius: 50%;
-  object-fit: cover;
   display: block;
+  height: 100%;
+  object-fit: cover;
 }
 .username {
   font-weight: 600;

@@ -30,7 +30,7 @@
 }
 
 .post-image {
-  flex: 0 0 60%;  
+  flex: 0 0 60%;
   max-width: 60%;
   background-color: var(--gray-800);
   display: flex;
@@ -101,9 +101,9 @@
 
 .comment-user {
   display: flex;
-  flex-wrap: wrap;        
+  flex-wrap: wrap;
   align-items: flex-start;
-  gap: 4px;              
+  gap: 4px;
 }
 
 .comment-list {
@@ -119,10 +119,10 @@
   font-weight: var(--supporting-text-weight);
   line-height: var(--supporting-text-line-height);
   letter-spacing: var(--supporting-text-tracking);
-  white-space: normal;       
-  overflow-wrap: break-word;  
-  word-break: break-word;     
-  flex: 1 1 auto;             
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  flex: 1 1 auto;
 }
 
 .comment-meta {
@@ -223,10 +223,11 @@ mat-dialog-actions {
 }
 
 .image-user {
-  max-width: 30px;
+  width: 100%;
   border-radius: 50%;
-  object-fit: cover;
   display: block;
+  height: 100%;
+  object-fit: cover;
 }
 
 .more-comments-button {

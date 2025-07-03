@@ -8,10 +8,11 @@ import { DatePipe } from '@angular/common';
 import { PostComponent } from '../posts/post/post.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NewPostModalComponent } from '../posts/postsModal/dialog.component';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 
 @Component({
   selector: 'app-my-profile',
-  imports: [DatePipe, PostComponent],
+  imports: [DatePipe, PostComponent, SpinnerComponent],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.css'
 })
